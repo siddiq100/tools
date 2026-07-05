@@ -21,6 +21,7 @@ const radarIcon = document.getElementById('radarIcon');
 let ws = null;
 let peerConnection = null;
 let localStream = null;
+let remoteCandidatesQueue = [];
 
 // Configuration for WebRTC. Uses free Google STUN servers for NAT traversal by default.
 const rtcConfig = {
@@ -34,7 +35,13 @@ const rtcConfig = {
 // Initialize WebSocket signaling connection
 function initSignaling() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}`;
+    
+    // Connect to port 3000 if running locally (e.g. from XAMPP Apache), otherwise use current host for cloud deployment
+    const host = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+        ? `${window.location.hostname}:3000` 
+        : window.location.host;
+        
+    const wsUrl = `${protocol}//${host}`;
     
     ws = new WebSocket(wsUrl);
 
@@ -71,10 +78,26 @@ function initSignaling() {
                     if (payload.sdp && payload.sdp.type === 'answer') {
                         console.log('Received WebRTC Answer from Agent');
                         await peerConnection.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+                        
+                        // Process queued ICE candidates now that remote description is set
+                        for (const candidate of remoteCandidatesQueue) {
+                            try {
+                                await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+                            } catch (e) {
+                                console.error('Error adding queued ICE candidate:', e);
+                            }
+                        }
+                        remoteCandidatesQueue = [];
                     } else if (payload.candidate) {
                         console.log('Received ICE Candidate from Agent');
-                        if (peerConnection) {
-                            await peerConnection.addIceCandidate(new RTCIceCandidate(payload.candidate));
+                        if (peerConnection && peerConnection.remoteDescription) {
+                            try {
+                                await peerConnection.addIceCandidate(new RTCIceCandidate(payload.candidate));
+                            } catch (e) {
+                                console.error('Error adding ICE candidate:', e);
+                            }
+                        } else {
+                            remoteCandidatesQueue.push(payload.candidate);
                         }
                     }
                     break;
@@ -182,6 +205,8 @@ function stopScreenSharing() {
         peerConnection.close();
         peerConnection = null;
     }
+
+    remoteCandidatesQueue = [];
 
     clientLayout.classList.remove('active-sharing');
     radarIcon.className = 'fa-solid fa-desktop';
