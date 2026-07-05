@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توفيق أسست | لوحة تحكم المهندس</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container" style="max-width: 1400px;">
+        <!-- Header -->
+        <header class="app-header">
+            <a href="index.html" class="logo">
+                <span class="logo-icon"><i class="fa-solid fa-house-laptop"></i></span>
+                <span class="logo-text">توفيق أسست</span>
+            </a>
+            <div id="connStatusPill" class="status-pill status-disconnected">
+                <span class="status-dot"></span>
+                <span id="connStatusText">جاري الاتصال بالسيرفر...</span>
+            </div>
+        </header>
+
+        <!-- Main Panel layout -->
+        <main class="console-layout">
+            <!-- Sidebar info panel -->
+            <div class="sidebar-panel">
+                <div>
+                    <h3 style="margin-bottom: 0.5rem; color: var(--primary-fuchsia);"><i class="fa-solid fa-circle-info"></i> معلومات الجلسة</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">أرسل هذا الرمز أو الرابط للعميل للبدء:</p>
+                </div>
+
+                <!-- Room ID -->
+                <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 12px; border: var(--neon-border); text-align: center; font-size: 1.5rem; font-weight: 800; letter-spacing: 3px; color: var(--primary-fuchsia);" id="lblRoomId">
+                    ------
+                </div>
+
+                <!-- Copy buttons -->
+                <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    <button id="btnCopyLink" class="btn btn-outline btn-sm">
+                        <i class="fa-solid fa-copy"></i> نسخ رابط العميل
+                    </button>
+                </div>
+
+                <!-- Logs console -->
+                <div style="display: flex; flex-direction: column; flex: 1;">
+                    <h4 style="margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--secondary-cyan);"><i class="fa-solid fa-terminal"></i> سجل الأحداث المباشر</h4>
+                    <div class="log-panel" id="logPanel">
+                        <div class="log-entry">بدء تشغيل لوحة التحكم...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video stream panel -->
+            <div class="video-container-panel" id="videoPanel">
+                <!-- Video stream -->
+                <video id="remoteVideo" autoplay playsinline></video>
+
+                <!-- Video placeholder -->
+                <div class="video-placeholder" id="videoPlaceholder">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <h3>بانتظار انضمام العميل وبدء البث</h3>
+                    <p>يرجى تزويد العميل برابط الجلسة للبدء بمشاركة شاشته</p>
+                </div>
+
+                <!-- Hover Overlay Controls -->
+                <div class="video-controls" id="videoControls" style="display: none;">
+                    <button class="control-btn" id="btnFullscreen" title="ملء الشاشة">
+                        <i class="fa-solid fa-expand"></i>
+                    </button>
+                    <button class="control-btn" id="btnScreenshot" title="التقاط لقطة شاشة">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                    <button class="control-btn" id="btnZoomIn" title="تكبير البث">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </button>
+                    <button class="control-btn" id="btnZoomReset" title="إعادة تعيين التكبير">
+                        <i class="fa-solid fa-arrows-to-dot"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>لوحة التحكم تعتمد على اتصال نظير لنظير مشفر ومؤمن بالكامل لضمان سرية البيانات</p>
+        </footer>
+    </div>
+
+    <!-- WebRTC Agent Logic file -->
+    <script src="agent.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توفيق للـدعم الفني | مشاركة الشاشة السحابية</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <a href="index.html" class="logo">
+                <span class="logo-icon"><i class="fa-solid fa-house-laptop"></i></span>
+                <span class="logo-text">توفيق أسست</span>
+            </a>
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                <span>المنصة السحابية المستقلة</span>
+            </div>
+        </header>
+
+        <!-- Main Card -->
+        <main class="glass-card">
+            <div class="hub-layout">
+                <!-- Left Intro column -->
+                <div class="hub-intro">
+                    <h1>الدعم الفني ومشاركة الشاشة السريعة</h1>
+                    <p>أداة سحابية مستقلة وخاصة تتيح لمهندسي الدعم الفني فحص ومعالجة المشاكل البرمجية والتقنية عن بُعد عبر مشاركة الشاشة بالوقت الفعلي مع العميل بخصوصية تامة وبدون أي اشتراكات.</p>
+                    <div style="margin-top: 1.5rem; display: flex; gap: 0.8rem; flex-wrap: wrap;">
+                        <span style="background: rgba(0, 240, 255, 0.08); border: 1px solid rgba(0, 240, 255, 0.2); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; color: var(--secondary-cyan);">
+                            <i class="fa-solid fa-shield-halved"></i> تشفير اتصال مباشر WebRTC
+                        </span>
+                        <span style="background: rgba(255, 0, 127, 0.08); border: 1px solid rgba(255, 0, 127, 0.2); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; color: var(--primary-fuchsia);">
+                            <i class="fa-solid fa-server"></i> استضافة ذاتية خاصة 100%
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Right Actions column -->
+                <div class="hub-actions">
+                    <!-- Agent Action -->
+                    <div style="background: rgba(255, 255, 255, 0.02); padding: 1.8rem; border-radius: 16px; border: 1px solid rgba(255, 0, 127, 0.15);">
+                        <h3 style="margin-bottom: 0.6rem; color: var(--primary-fuchsia);"><i class="fa-solid fa-user-tie"></i> خاص بمهندس الدعم</h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.2rem;">قم بإنشاء غرفة دعم جديدة وتوليد الرابط الآمن لإرساله للعميل لمشاهدة شاشته.</p>
+                        <button id="btnCreateSession" class="btn btn-primary" style="width: 100%;">
+                            <i class="fa-solid fa-plus"></i> إنشاء جلسة دعم جديدة
+                        </button>
+                    </div>
+
+                    <div class="divider">أو</div>
+
+                    <!-- Client Action -->
+                    <div style="background: rgba(255, 255, 255, 0.02); padding: 1.8rem; border-radius: 16px; border: 1px solid rgba(0, 240, 255, 0.15);">
+                        <h3 style="margin-bottom: 0.6rem; color: var(--secondary-cyan);"><i class="fa-solid fa-headset"></i> خاص بالعميل</h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.2rem;">إذا أعطاك المهندس رمز الجلسة يدوياً، أدخله هنا للانضمام المباشر وبدء البث.</p>
+                        <form id="joinForm">
+                            <div class="form-group">
+                                <input type="text" id="txtRoomId" class="form-control" placeholder="أدخل رمز الجلسة (مثال: 582931)" required autocomplete="off">
+                            </div>
+                            <button type="submit" class="btn btn-cyan" style="width: 100%;">
+                                <i class="fa-solid fa-right-to-bracket"></i> انضم لجلسة الدعم
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>جميع الحقوق محفوظة &copy; 2026 توفيق للحلول والأجهزة الذكية</p>
+        </footer>
+    </div>
+
+    <script>
+        // Generate a random room ID and redirect to agent dashboard
+        document.getElementById('btnCreateSession').addEventListener('click', () => {
+            const roomId = Math.floor(100000 + Math.random() * 900000); // 6-digit code
+            window.location.href = `agent.html?room=${roomId}`;
+        });
+
+        // Handle join room form
+        document.getElementById('joinForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const roomId = document.getElementById('txtRoomId').value.trim();
+            if (roomId) {
+                window.location.href = `client.html?room=${roomId}`;
+            }
+        });
+    </script>
+</body>
+</html>

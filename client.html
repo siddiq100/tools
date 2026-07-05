@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توفيق أسست | بث مشاركة الشاشة للعميل</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <a href="index.html" class="logo">
+                <span class="logo-icon"><i class="fa-solid fa-house-laptop"></i></span>
+                <span class="logo-text">توفيق أسست</span>
+            </a>
+            <div id="connStatusPill" class="status-pill status-disconnected">
+                <span class="status-dot"></span>
+                <span id="connStatusText">جاري الاتصال...</span>
+            </div>
+        </header>
+
+        <!-- Client Main Panel -->
+        <main class="glass-card">
+            <div class="client-layout" id="clientLayout">
+                <!-- Radar animation -->
+                <div class="sharing-radar" id="sharingRadar">
+                    <div class="radar-circle"></div>
+                    <div class="radar-circle"></div>
+                    <div class="radar-circle"></div>
+                    <div class="radar-center">
+                        <i class="fa-solid fa-desktop" id="radarIcon"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 style="font-size: 2rem; margin-bottom: 0.6rem;" id="clientHeaderTitle">بث مشاركة الشاشة للدعم الفني</h2>
+                    <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem auto;" id="clientHeaderDesc">
+                        أنت متصل الآن بالجلسة رقم: <strong style="color: var(--secondary-cyan); font-size: 1.2rem;" id="lblRoomId">...</strong>. الرجاء الضغط على الزر أدناه لبدء بث شاشتك لمهندس الدعم الفني لحل المشكلة.
+                    </p>
+                </div>
+
+                <div class="form-actions" style="display: flex; gap: 1rem;">
+                    <button id="btnStartShare" class="btn btn-primary btn-lg" disabled>
+                        <i class="fa-solid fa-play"></i> بدء بث ومشاركة الشاشة
+                    </button>
+                    <button id="btnStopShare" class="btn btn-outline btn-lg" style="display: none; border-color: var(--alert-neon-red); color: var(--alert-neon-red);">
+                        <i class="fa-solid fa-stop"></i> إيقاف البث
+                    </button>
+                </div>
+
+                <div id="errorBox" style="color: var(--alert-neon-red); font-weight: 600; margin-top: 1rem; display: none;">
+                    <i class="fa-solid fa-circle-exclamation"></i> <span id="errorMsg">حدث خطأ</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>يمكنك إيقاف مشاركة الشاشة في أي وقت لحماية خصوصيتك</p>
+        </footer>
+    </div>
+
+    <!-- WebRTC Client Logic file -->
+    <script src="client.js"></script>
+</body>
+</html>
