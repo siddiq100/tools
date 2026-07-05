@@ -10,10 +10,13 @@ const wss = new WebSocket.Server({ server });
 
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from "tools" if it exists (for GitHub structure), otherwise fallback to "public"
-const publicDir = fs.existsSync(path.join(__dirname, 'tools'))
-    ? path.join(__dirname, 'tools')
-    : path.join(__dirname, 'public');
+// Serve static files from "tools" or "public" if they exist, otherwise fallback to root directory
+let publicDir = __dirname;
+if (fs.existsSync(path.join(__dirname, 'tools'))) {
+    publicDir = path.join(__dirname, 'tools');
+} else if (fs.existsSync(path.join(__dirname, 'public'))) {
+    publicDir = path.join(__dirname, 'public');
+}
 
 app.use(express.static(publicDir));
 
