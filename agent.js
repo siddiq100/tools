@@ -27,6 +27,7 @@ const btnZoomReset = document.getElementById('btnZoomReset');
 let ws = null;
 let peerConnection = null;
 let zoomScale = 1;
+let remoteCandidatesQueue = [];
 
 // Configuration for WebRTC.
 const rtcConfig = {
@@ -56,7 +57,13 @@ function updateStatus(status, text) {
 // Initialize WebSocket signaling connection
 function initSignaling() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}`;
+    
+    // Connect to port 3000 if running locally (e.g. from XAMPP Apache), otherwise use current host for cloud deployment
+    const host = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+        ? `${window.location.hostname}:3000` 
+        : window.location.host;
+        
+    const wsUrl = `${protocol}//${host}`;
     
     ws = new WebSocket(wsUrl);
 
@@ -96,8 +103,14 @@ function initSignaling() {
                         log('تم استلام طلب بدء البث (WebRTC Offer).');
                         await handleWebRTCOffer(payload.sdp);
                     } else if (payload.candidate) {
-                        if (peerConnection) {
-                            await peerConnection.addIceCandidate(new RTCIceCandidate(payload.candidate));
+                        if (peerConnection && peerConnection.remoteDescription) {
+                            try {
+                                await peerConnection.addIceCandidate(new RTCIceCandidate(payload.candidate));
+                            } catch (e) {
+                                console.error('Error adding ICE candidate:', e);
+                            }
+                        } else {
+                            remoteCandidatesQueue.push(payload.candidate);
                         }
                     }
                     break;
@@ -145,6 +158,17 @@ async function handleWebRTCOffer(sdpOffer) {
 
         // Process offer and create answer
         await peerConnection.setRemoteDescription(new RTCSessionDescription(sdpOffer));
+
+        // Process queued ICE candidates now that remote description is set
+        for (const candidate of remoteCandidatesQueue) {
+            try {
+                await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+            } catch (e) {
+                console.error('Error adding queued ICE candidate:', e);
+            }
+        }
+        remoteCandidatesQueue = [];
+
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
 
@@ -171,6 +195,7 @@ function resetVideoState() {
     videoControls.style.display = 'none';
     zoomScale = 1;
     remoteVideo.style.transform = `scale(${zoomScale})`;
+    remoteCandidatesQueue = [];
     
     if (peerConnection) {
         peerConnection.close();
